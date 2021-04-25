@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.81.0" />
+
+
+<title>Tebow vs Jordan: Who is Baseball&#39;s Goat - Will Beiermann Blog</title>
+<meta property="og:title" content="Tebow vs Jordan: Who is Baseball&#39;s Goat - Will Beiermann Blog">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/will-beiermann">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/beiermannWill">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">Tebow vs Jordan: Who is Baseball&#39;s Goat</h1>
+
+    
+    <span class="article-date">2021-04-25</span>
+    
+
+    <div class="article-content">
+      
+<script src="/2021/04/25/tebow-vs-jordan-who-is-baseball-s-goat/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Many sports GOAT arguments have become played out at to the point where there’s nothing left to say. Questions about football and basketball’s GOAT have even been banned from this class. There is one GOAT debate however that has been almost entirely ignored by the mainstream sports media. Jordan. Tebow. Who is baseball’s GOAT?</p>
+<pre class="r"><code>library(tidyverse)
+library(waffle)
+library(ggalt)
+library(ggrepel)</code></pre>
+<pre class="r"><code>TebHits&lt;- read_csv(&quot;TebowBatting.csv&quot;)</code></pre>
+<pre class="r"><code>MJHits&lt;- read_csv(&quot;JordanBatting.csv&quot;)</code></pre>
+<pre class="r"><code>Hits1994&lt;- read_csv(&quot;MinorsBattingLeaders1995&quot;)</code></pre>
+<pre class="r"><code>Hits2017&lt;- read_csv(&quot;MinorsBattingLeaders2017&quot;)</code></pre>
+<p>GOAT obviously is the wrong word here, but the question is an interesting one. Both men were best known for their careers outside of the diamond, with Jordan being a legendary actor and gambler, and Tebow being a mediocre College Football show host and Instagram Jesus enthusiast. They both did have brief stints in the minor leagues however, so we’ll take a look at that.</p>
+<pre class="r"><code>Tebow17&lt;- read_csv(&quot;TebowBatting.csv&quot;)</code></pre>
+<p>Tebow played four years to MJ’s one, so to make it fair, we’ll just take Tim Tebow’s 2017 season, when he played for the Binghampton Rumble Ponies.</p>
+<pre class="r"><code>TebowAA &lt;- Tebow17 %&gt;% filter(Lev == &quot;AA&quot;)</code></pre>
+<p>After filtering out Tebow’s AA season, I’ll make a waffle iron so we can get a good look at both of their hits and at bats.</p>
+<pre class="r"><code>Tebowhitting &lt;- c(&quot;Tebow Hits&quot;=74, &quot;At Bats&quot;=271, 215)</code></pre>
+<pre class="r"><code>Jordanhitting &lt;- c(&quot;Jordan Hits&quot;=88, &quot;At Bats&quot;=436)</code></pre>
+<pre class="r"><code>iron(
+waffle(Tebowhitting/2,
+        rows = 10,
+        title=&quot;Hits: At Bats &quot;,
+        xlab=&quot;1 square = 2 hits&quot;,
+        colors = c(&quot;dark orange&quot;, &quot;dark red&quot;, &quot;white&quot;)) + 
+  labs(title = &quot;His Airness Out Hits Tebow&quot;, subtitle=&quot;MJ had over 200 more hits than Tebow&quot;), 
+waffle(Jordanhitting/2,
+        xlab=&quot;1 square = 1 hits&quot;,
+        colors = c(&quot;dark orange&quot;, &quot;dark red&quot;)) + 
+  labs(caption = &quot;Baseball Reference| Will Beiermann&quot;))</code></pre>
+<p><img src="/2021/04/25/tebow-vs-jordan-who-is-baseball-s-goat/index_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+Jordan hit the ball a lot more, with 215 more hits then Tebow, so he wins this pretty easily, but who was hitting for more extra bases?</p>
+<pre class="r"><code>TBAA &lt;- Tebow17 %&gt;% 
+  filter(Lev == &quot;AA&quot;) %&gt;%
+  mutate(Name = &quot;Tim Tebow&quot;) %&gt;% 
+  select(Name, `2B`, `3B`, HR, RBI)</code></pre>
+<p>I’ll break down their hits by doubles, triples, home runs, and RBI’s to see who added the most value with their hitting.</p>
+<pre class="r"><code>MJAA&lt;- MJHits %&gt;% 
+  filter(Year == &quot;1994&quot;) %&gt;% 
+  mutate(Name = &quot;Michael Jordan&quot;) %&gt;% 
+  select(Name, `2B`, `3B`, HR, RBI)</code></pre>
+<pre class="r"><code>AA&lt;- bind_rows(MJAA, TBAA)</code></pre>
+<pre class="r"><code>AAlong&lt;- AA %&gt;% pivot_longer(cols = -Name, names_to = &quot;Hit&quot;, values_to = &quot;Total&quot;)</code></pre>
+<pre class="r"><code>ggplot() + 
+  geom_bar(data= AAlong, aes(x=Name, weight= Total, fill= Hit)) + 
+  coord_flip() + 
+  scale_fill_manual(values = c(&quot;navy&quot;, &quot;light blue&quot;, &quot; orange&quot;, &quot;dark red&quot;)) +
+  labs(x=&quot;Count&quot;, y=&quot;Player&quot;, title=&quot;Head to Head Hits&quot;, subtitle=&quot;Jordan has more RBIs and doubles, but Tebow has more HRs and triples&quot;, caption=&quot;Source: Baseball Reference | By Will Beiermann&quot;) + 
+  theme_minimal() + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank()
+    ) </code></pre>
+<p><img src="/2021/04/25/tebow-vs-jordan-who-is-baseball-s-goat/index_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+So MJ clearly had far more RBIs, with a 51-36 advantage. Jordan also hit more doubles, but when it came to triples and homers, the Heisman winner takes the advantage.</p>
+<pre class="r"><code>Top1994&lt;- Hits1994 %&gt;% top_n(50, wt=H)</code></pre>
+<pre class="r"><code>MJHits2&lt;- MJHits %&gt;% select(-Lg)</code></pre>
+<pre class="r"><code>Top2017&lt;- Hits2017 %&gt;% top_n(50, wt=H)</code></pre>
+<p>Lastly, we’ll look at how these two legends stack up with their peers. I’ve taken the top 50 hitters from each of their seasons and will make a scatterplot to show how they compare.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=Top1994, aes(x=AB, y=H), color=&quot;orange&quot;) + 
+  geom_point(data=MJHits, aes(x=AB, y=H), color=&quot;red&quot;) + 
+  geom_point(data=Top2017, aes(x=AB, y=H), color=&quot;blue&quot;) + 
+  geom_point(data=TebowAA, aes(x=AB, y=H), color=&quot;green&quot;) + 
+  geom_text(aes(x=438, y= 91, label=&quot;Jordan&quot;)) +
+  geom_text(aes(x=270, y= 78, label=&quot;Tebow&quot;)) +
+labs(x=&quot;Hits&quot;, y=&quot;At Bats&quot;, title=&quot;Top Hitters of &#39;94 and &#39;17&quot;, subtitle=&quot;Tebow and Jordan both struggled against the top of their leagues when it came to hitting.&quot;, caption=&quot;Source: Baseball Reference | By Will Beiermann&quot;) + 
+  theme_minimal() + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank()
+    ) </code></pre>
+<p><img src="/2021/04/25/tebow-vs-jordan-who-is-baseball-s-goat/index_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<pre class="r"><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p>MJ actually fares decently well compared to some batters in 2017, but the call up process has changed so much that could be an outlier. Unfortunately, the SEC network’s favorite son is a distant last when compared to the competition.</p>
+<p>Clearly, Michael Jordan had a better season then Tim Tebow when you break down their AA stats. Tebow was actually a much better fielder then MJ, but the 1994 fielding stats were non existent.</p>
+<p>Tebow did have a longer career and made it to AAA, but MJ did not play more because his main sport actually wanted him to return. As for how they stack up to their peers, you don’t need data to know they should not have been playing baseball in the first place.</p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sports on Will Beiermann Blog</title>
+    <link>/tags/sports/</link>
+    <description>Recent content in Sports on Will Beiermann Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 25 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/sports/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tebow vs Jordan: Who is Baseball&#39;s Goat</title>
+      <link>/2021/04/25/tebow-vs-jordan-who-is-baseball-s-goat/</link>
+      <pubDate>Sun, 25 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/04/25/tebow-vs-jordan-who-is-baseball-s-goat/</guid>
+      <description>Many sports GOAT arguments have become played out at to the point where there’s nothing left to say. Questions about football and basketball’s GOAT have even been banned from this class. There is one GOAT debate however that has been almost entirely ignored by the mainstream sports media. Jordan. Tebow. Who is baseball’s GOAT?
+library(tidyverse) library(waffle) library(ggalt) library(ggrepel) TebHits&amp;lt;- read_csv(&amp;quot;TebowBatting.csv&amp;quot;) MJHits&amp;lt;- read_csv(&amp;quot;JordanBatting.csv&amp;quot;) Hits1994&amp;lt;- read_csv(&amp;quot;MinorsBattingLeaders1995&amp;quot;) Hits2017&amp;lt;- read_csv(&amp;quot;MinorsBattingLeaders2017&amp;quot;) GOAT obviously is the wrong word here, but the question is an interesting one.</description>
+    </item>
+    
+  </channel>
+</rss>
